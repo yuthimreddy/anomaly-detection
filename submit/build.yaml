@@ -1,14 +1,13 @@
-# cloudformation solution goes here
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >
-  DS5220 DP11 – Full event-driven anomaly detection stack.
-  Required Resources: EC2 (Ubuntu 24.04 t3.micro), Security Group, Elastic IP,
+  DS5220 Data Project 1 – Full event-driven anomaly detection stack.
+  Resources: EC2 (Ubuntu 24.04 t3.micro), Security Group, Elastic IP,
   S3 bucket, IAM role/instance profile, SNS topic + HTTP subscription,
   and S3 event notification on raw/*.csv -> SNS.
 
-
+# ---------------------------------------------------------------------------
 # Parameters
-
+# ---------------------------------------------------------------------------
 Parameters:
 
   YourIPAddress:
@@ -25,23 +24,24 @@ Parameters:
       HTTPS URL of your FORKED anomaly-detection repository.
       e.g. https://github.com/YOUR-USERNAME/anomaly-detection
     Default: https://github.com/yuthimreddy/anomaly-detection/blob/main/submit/build.yaml
+
   KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Name of an existing EC2 Key Pair for SSH access.
 
-
+# ---------------------------------------------------------------------------
 # Resources
-
+# ---------------------------------------------------------------------------
 Resources:
 
-  
+  # -------------------------------------------------------------------------
   # S3 Bucket
-
+  # -------------------------------------------------------------------------
   AnomalyBucket:
     Type: AWS::S3::Bucket
     DependsOn: SNSTopicPolicy   # bucket notification needs the topic policy first
     Properties:
-      # letting CloudFormation generate a unique name
+      # Let CloudFormation generate a unique name
       NotificationConfiguration:
         TopicConfigurations:
           - Event: s3:ObjectCreated:*
@@ -54,9 +54,9 @@ Resources:
                     Value: .csv
             Topic: !Ref AnomalySNSTopic
 
-  
+  # -------------------------------------------------------------------------
   # IAM Role & Instance Profile
-  
+  # -------------------------------------------------------------------------
   AnomalyEC2Role:
     Type: AWS::IAM::Role
     Properties:
@@ -94,11 +94,13 @@ Resources:
       Roles:
         - !Ref AnomalyEC2Role
 
+  # -------------------------------------------------------------------------
   # Security Group
+  # -------------------------------------------------------------------------
   AnomalySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: "DS5220 DP1 – Allow SSH from my IP and port 8000 from anywhere"
+      GroupDescription: "DS5220 DP1 - Allow SSH from my IP and port 8000 from anywhere"
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -114,7 +116,9 @@ Resources:
         - Key: Name
           Value: ds5220-dp1-sg
 
+  # -------------------------------------------------------------------------
   # EC2 Instance
+  # -------------------------------------------------------------------------
   AnomalyEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
