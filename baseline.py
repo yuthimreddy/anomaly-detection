@@ -7,6 +7,10 @@ from typing import Optional
 
 s3 = boto3.client("s3")
 
+# Defining our logger:
+import logging
+logger = logging.getLogger(__name__)
+
 
 class BaselineManager:
     """
