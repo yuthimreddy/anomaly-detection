@@ -24,8 +24,7 @@ Parameters:
     Description: >
       HTTPS URL of your FORKED anomaly-detection repository.
       e.g. https://github.com/YOUR-USERNAME/anomaly-detection
-    Default: https://github.com/uvasds-systems/anomaly-detection
-
+    Default: https://github.com/yuthimreddy/anomaly-detection/blob/main/submit/build.yaml
   KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Name of an existing EC2 Key Pair for SSH access.
