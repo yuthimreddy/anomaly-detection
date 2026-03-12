@@ -1,13 +1,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >
-  DS5220 Data Project 1 – Full event-driven anomaly detection stack.
+  DS5220 DP1 - Full event-driven anomaly detection stack.
   Resources: EC2 (Ubuntu 24.04 t3.micro), Security Group, Elastic IP,
   S3 bucket, IAM role/instance profile, SNS topic + HTTP subscription,
   and S3 event notification on raw/*.csv -> SNS.
 
-# ---------------------------------------------------------------------------
 # Parameters
-# ---------------------------------------------------------------------------
 Parameters:
 
   YourIPAddress:
@@ -29,12 +27,10 @@ Parameters:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Name of an existing EC2 Key Pair for SSH access.
 
-# ---------------------------------------------------------------------------
 # Resources
-# ---------------------------------------------------------------------------
 Resources:
 
-  # -------------------------------------------------------------------------
+  
   # S3 Bucket
   # -------------------------------------------------------------------------
   AnomalyBucket:
@@ -54,9 +50,9 @@ Resources:
                     Value: .csv
             Topic: !Ref AnomalySNSTopic
 
-  # -------------------------------------------------------------------------
+  
   # IAM Role & Instance Profile
-  # -------------------------------------------------------------------------
+  
   AnomalyEC2Role:
     Type: AWS::IAM::Role
     Properties:
@@ -94,9 +90,9 @@ Resources:
       Roles:
         - !Ref AnomalyEC2Role
 
-  # -------------------------------------------------------------------------
+  
   # Security Group
-  # -------------------------------------------------------------------------
+  
   AnomalySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -116,7 +112,7 @@ Resources:
         - Key: Name
           Value: ds5220-dp1-sg
 
-  # -------------------------------------------------------------------------
+  
   # EC2 Instance
   # -------------------------------------------------------------------------
   AnomalyEC2Instance:
@@ -185,9 +181,9 @@ Resources:
         - Key: Name
           Value: ds5220-dp1-instance
 
-  # -------------------------------------------------------------------------
+  
   # Elastic IP – attach to the instance for a stable address
-  # -------------------------------------------------------------------------
+  
   AnomalyEIP:
     Type: AWS::EC2::EIP
     Properties:
@@ -201,7 +197,7 @@ Resources:
 
   # -------------------------------------------------------------------------
   # SNS Topic
-  # -------------------------------------------------------------------------
+  
   AnomalySNSTopic:
     Type: AWS::SNS::Topic
     Properties:
@@ -226,9 +222,9 @@ Resources:
               ArnLike:
                 aws:SourceArn: !Sub "arn:aws:s3:::${AWS::StackName}*"
 
-  # -------------------------------------------------------------------------
+  
   # SNS HTTP Subscription – points to the EC2 /notify endpoint
-  # -------------------------------------------------------------------------
+  
   AnomalySNSSubscription:
     Type: AWS::SNS::Subscription
     DependsOn: AnomalyEIPAssociation
@@ -237,9 +233,8 @@ Resources:
       Protocol: http
       Endpoint: !Sub "http://${AnomalyEIP}:8000/notify"
 
-# ---------------------------------------------------------------------------
 # Outputs
-# ---------------------------------------------------------------------------
+# 
 Outputs:
 
   BucketName:
